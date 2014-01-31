@@ -1,14 +1,14 @@
 """This file contains code used in "Think Stats",
 by Allen B. Downey, available from greenteapress.com
 
-Copyright 2010 Allen B. Downey
+Copyright 2014 Allen B. Downey
 License: GNU GPLv3 http://www.gnu.org/licenses/gpl.html
 """
 
+import thinkstats2
+import thinkplot
+
 import relay
-import Cdf
-import Pmf
-import myplot
 
 
 def BiasPmf(pmf, speed, name=None):
@@ -38,34 +38,26 @@ def main():
     speeds = relay.GetSpeeds(results)
 
     # plot the distribution of actual speeds
-    pmf = Pmf.MakePmfFromList(speeds, 'actual speeds')
-
-    # myplot.Clf()
-    # myplot.Hist(pmf)
-    # myplot.Save(root='observed_speeds',
-    #             title='PMF of running speed',
-    #             xlabel='speed (mph)',
-    #             ylabel='probability')
+    pmf = thinkstats2.MakePmfFromList(speeds, 'actual speeds')
 
     # plot the biased distribution seen by the observer
     biased = BiasPmf(pmf, 7.5, name='observed speeds')
 
-    myplot.Clf()
-    myplot.Hist(biased)
-    myplot.Save(root='observed_speeds',
-                title='PMF of running speed',
-                xlabel='speed (mph)',
-                ylabel='probability')
+    thinkplot.Hist(biased)
+    thinkplot.Save(root='observed_speeds',
+                   title='PMF of running speed',
+                   xlabel='speed (mph)',
+                   ylabel='probability')
 
-    cdf = Cdf.MakeCdfFromPmf(biased)
+    cdf = thinkstats2.MakeCdfFromPmf(biased)
 
-    myplot.Clf()
-    myplot.Cdf(cdf)
-    myplot.Save(root='observed_speeds_cdf',
-                title='CDF of running speed',
-                xlabel='speed (mph)',
-                ylabel='cumulative probability')
-    
+    thinkplot.Clf()
+    thinkplot.Cdf(cdf)
+    thinkplot.Save(root='observed_speeds_cdf',
+                   title='CDF of running speed',
+                   xlabel='speed (mph)',
+                   ylabel='cumulative probability')
+
 
 if __name__ == '__main__':
     main()
