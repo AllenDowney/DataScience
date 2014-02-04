@@ -106,8 +106,14 @@ def PrePlot(num=None, rows=1, cols=1):
         SUBPLOT_COLS = cols
     
 
-def SubPlot(plot_number):
-    pyplot.subplot(SUBPLOT_ROWS, SUBPLOT_COLS, plot_number)
+def SubPlot(rows, cols, plot_number):
+    """Configures the number of subplots and changes the current plot.
+
+    rows: int
+    cols: int
+    plot_number: int
+    """
+    pyplot.subplot(rows, cols, plot_number)
 
 
 class InfiniteList(list):
@@ -280,10 +286,14 @@ def Cdf(cdf, complement=False, transform=None, **options):
 
     Returns:
       dictionary with the scale options that should be passed to
-      myplot.Save or myplot.Show
+      Config, Show or Save.
     """
     xs, ps = cdf.Render()
     scale = dict(xscale='linear', yscale='linear')
+
+    for s in ['xscale', 'yscale']: 
+        if s in options:
+            scale[s] = options.pop(s)
 
     if transform == 'exponential':
         complement = True
@@ -399,32 +409,14 @@ def Config(**options):
     """Configures the plot.
 
     Pulls options out of the option dictionary and passes them to
-    title, xlabel, ylabel, xscale, yscale, xticks, yticks, axis, legend,
-    and loc.
+    the corresponding pyplot functions.
     """
-    title = options.get('title', '')
-    pyplot.title(title)
+    names = ['title', 'xlabel', 'ylabel', 'xscale', 'yscale',
+             'xticks', 'yticks', 'axis']
 
-    xlabel = options.get('xlabel', '')
-    pyplot.xlabel(xlabel)
-
-    ylabel = options.get('ylabel', '')
-    pyplot.ylabel(ylabel)
-
-    if 'xscale' in options:
-        pyplot.xscale(options['xscale'])
-
-    if 'xticks' in options:
-        pyplot.xticks(options['xticks'])
-
-    if 'yscale' in options:
-        pyplot.yscale(options['yscale'])
-
-    if 'yticks' in options:
-        pyplot.yticks(options['yticks'])
-
-    if 'axis' in options:
-        pyplot.axis(options['axis'])
+    for name in names:
+        if name in options:
+            getattr(pyplot, name)(options[name])
 
     loc = options.get('loc', 0)
     legend = options.get('legend', True)

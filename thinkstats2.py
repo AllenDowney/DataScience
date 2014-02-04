@@ -1834,7 +1834,7 @@ def LogBinomialCoef(n, k):
     return n * log(n) - k * log(k) - (n - k) * log(n - k)
 
 
-def NormalPlot(ys, jitter=0.0):
+def NormalProbability(ys, jitter=0.0):
     """Generates data for a normal probability plot.
 
     ys: sequence of values
@@ -1845,8 +1845,11 @@ def NormalPlot(ys, jitter=0.0):
     n = len(ys)
     xs = numpy.random.normal(0, 1, n)
     xs.sort()
-    ys = numpy.random.uniform(-jitter, +jitter, n) + ys
+    
+    if jitter:
+        ys = numpy.random.uniform(-jitter, +jitter, n) + ys
     ys.sort()
+
     return xs, ys
 
 
@@ -1869,9 +1872,9 @@ def NormalProbabilityPlot(sample, label, data_color='blue', fit_color='gray'):
     sample: sequence of numbers
     label: string
     data_color: color string for the data
-    data_color: color string for the fitted line
+    fit_color: color string for the fitted line
     """
-    data = NormalPlot(sample)
+    data = NormalProbability(sample)
     fit = FitLine(*data)
 
     thinkplot.plot(*fit, color=fit_color, alpha=0.5)
