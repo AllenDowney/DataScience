@@ -229,6 +229,11 @@ def Pmfs(pmfs, **options):
 def Hist(hist, **options):
     """Plots a Pmf or Hist with a bar plot.
 
+    The default width of the bars is based on the minimum difference
+    between values in the Hist.  If that's too small, you can override
+    it by providing a width keyword argument, in the same units
+    as the values.
+
     Args:
       hist: Hist or Pmf object
       options: keyword args passed to pyplot.bar
