@@ -2079,6 +2079,52 @@ def CorrelatedGaussianGenerator(mu, sigma, rho):
         yield x * sigma + mu
 
 
+
+def RawMoment(xs, k):
+    """Computes the kth raw moment of xs.
+    """
+    return sum(x**k for x in xs) / float(len(xs))
+
+
+def CentralMoment(xs, k):
+    """Computes the kth central moment of xs.
+    """
+    xbar = RawMoment(xs, 1)
+    return sum((x - xbar)**k for x in xs) / len(xs)
+
+
+def StandardizedMoment(xs, k):
+    """Computes the kth standardized moment of xs.
+    """
+    var = CentralMoment(xs, 2)
+    sigma = math.sqrt(var)
+    return CentralMoment(xs, k) / sigma**k
+
+
+def Skewness(xs):
+    """Computes skewness.
+    """
+    return StandardizedMoment(xs, 3)
+
+
+def Median(xs):
+    """Computes the median (50th percentile) of a sequence.
+    """
+    cdf = MakeCdfFromList(xs)
+    return cdf.Value(0.5)
+
+
+def PearsonMedianSkewness(xs):
+    """Computes the Pearson median skewness.
+    """
+    median = Median(xs)
+    mean = RawMoment(xs, 1)
+    var = CentralMoment(xs, 2)
+    std = math.sqrt(var)
+    gp = 3 * (mean - median) / std
+    return gp
+
+
 def main():
     pass
     
