@@ -1853,17 +1853,16 @@ def NormalProbability(ys, jitter=0.0):
     return xs, ys
 
 
-def FitLine(xs, ys):
+def FitLine(xs, inter, slope):
     """Fits a line to the given data.
 
-    xs: numpy array of x
-    ys: sequence of y
+    xs: sequence of x
 
-    returns: xs, fit ys
+    returns: tuple of numpy arrays (sorted xs, fit ys)
     """
-    slope, inter, _, _, _ = scipy.stats.linregress(xs, ys)
-    fit_ys = inter + slope * xs
-    return xs, fit_ys
+    fit_xs = numpy.sort(xs)
+    fit_ys = inter + slope * fit_xs
+    return fit_xs, fit_ys
 
 
 def NormalProbabilityPlot(sample, label, data_color='blue', fit_color='gray'):
@@ -1980,17 +1979,6 @@ def LeastSquares(xs, ys):
     inter = ybar - slope * xbar
 
     return inter, slope
-
-
-def FitLine(xs, inter, slope):
-    """Returns the fitted line for the range of xs.
-
-    xs: x values used for the fit
-    slope: estimated slope
-    inter: estimated intercept
-    """
-    fys = [x * slope + inter for x in xs]
-    return xs, fys
 
 
 def Residuals(xs, ys, inter, slope):

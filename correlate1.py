@@ -51,9 +51,11 @@ def PValue(xs, ys, n=10):
 def main(name, data_dir='.'):
     xs, ys = ReadData(data_dir)
 
-    thinkplot.Scatter(xs, ys, alpha=0.2)
-    thinkplot.Show(xlabel='Age (years)',
-                   ylabel='Birth weight (oz)')
+    thinkplot.Scatter(xs, ys, alpha=0.05)
+    thinkplot.Save(root='correlate1',
+                   xlabel='Age (years)',
+                   ylabel='Birth weight (oz)',
+                   axis=[9,45,0,250])
 
     print 'Pearson', thinkstats2.Corr(xs, ys)
     print 'Spearman', thinkstats2.SpearmanCorr(xs, ys)
