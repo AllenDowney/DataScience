@@ -47,7 +47,23 @@ def SamplingDistributions(fxs, fys, res, n=10):
 
 
 def main(name, data_dir='.'):
+    random.seed(17)
+    
     xs, ys = ReadData(data_dir)
+    inter = thinkstats2.Mean(ys)
+    slope = 0
+    fxs, fys = thinkstats2.FitLine(xs, inter, slope)
+    res = thinkstats2.Residuals(xs, ys, inter, slope)
+
+    inter_cdf, slope_cdf = SamplingDistributions(fxs, fys, res, n=1000)
+
+    thinkplot.Cdf(slope_cdf)
+    thinkplot.Save(root='regress1',
+                   xlabel='Estimated slope (oz/year)',
+                   ylabel='CDF',
+                   title='Sampling distribution')
+
+    return
 
     inter, slope = thinkstats2.LeastSquares(xs, ys)
     print 'inter', inter
