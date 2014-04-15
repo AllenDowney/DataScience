@@ -313,6 +313,14 @@ class _DictWrapper(object):
         """
         self.d[x] = self.d.get(x, 0) * factor
 
+    def MultAll(self, factor):
+        """Scales the freq/prob for all values.
+
+        factor: how much to multiply by
+        """
+        for x in self.d:
+            self.d[x] *= factor
+
     def Remove(self, x):
         """Removes a value.
 
@@ -498,8 +506,6 @@ class Pmf(_DictWrapper):
         total = self.Total()
         if total == 0.0:
             raise ValueError('total probability is zero.')
-            logging.warning('Normalize: total probability is zero.')
-            return total
 
         factor = float(fraction) / total
         for x in self.d:
