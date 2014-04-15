@@ -387,8 +387,14 @@ class Pmf(_DictWrapper):
         """
         return self.d.get(x, default)
 
-    def Probs(self, xs):
-        """Gets probabilities for a sequence of values."""
+    def Probs(self, xs=None):
+        """Gets probabilities for a sequence of values.
+
+        xs: list of values
+        """
+        if xs is None:
+            return self.d.values()
+
         return [self.Prob(x) for x in xs]
 
     def MakeCdf(self, name=None):
@@ -892,6 +898,11 @@ class Cdf(object):
         """Returns a sorted list of values.
         """
         return self.xs
+
+    def Probs(self):
+        """Returns a list of probabilities corresponding to Values()
+        """
+        return self.ps
 
     def Items(self):
         """Returns a sorted sequence of (value, probability) pairs.

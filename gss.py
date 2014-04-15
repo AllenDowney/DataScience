@@ -3756,7 +3756,6 @@ def test_models(version=2, resample_flag=False):
     # run the models
     for version in [1, 2]:
         run_regression_and_print(resample, version=version, means=means)
-        return
 
     run_regression_and_print(subset, version=3, means=means)
 

@@ -139,7 +139,7 @@ class Pregnancies(Table):
         """Gets information about the fields to extract from the survey data.
 
         Documentation of the fields for Cycle 6 is at
-        http://nsfg.icpsr.umich.edu/cocoon/WebDocs/NSFG/public/index.htm
+        http://www.icpsr.umich.edu/nsfg6/
 
         Returns:
             sequence of (name, start, end, type) tuples
