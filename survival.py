@@ -98,7 +98,7 @@ def DurationCdf(ts, ss):
     return cdf
 
 
-def GetDurations(data_dir):
+def GetDurations(data_dir, keep_codes):
     """Reads pregnancy durations from NSFG data.
 
     data_dir: location of the data file
@@ -114,7 +114,7 @@ def GetDurations(data_dir):
     pmf.Print()
 
     durations = [record.prglength for record in preg.records
-                 if record.outcome in [1, 3, 4]]
+                 if record.outcome in keep_codes]
 
     print 'Number of relevant pregnancies', len(durations)
     return durations
@@ -160,12 +160,87 @@ def PlotConditionalSurvival(durations):
     thinkplot.Show()
 
 
+def PlotHazard(past, current):
+    """Plots the hazard function and survival function.
+
+    past: list of durations for complete pregnancies
+    current: list of durations for current pregnancies
+    """
+    # plot S(t) based on only past pregnancies
+    cdf = thinkstats2.MakeCdfFromList(past)
+    ts, ss = SurvivalFunction(cdf)
+    thinkplot.Plot(ts, ss, label='old S(t)', alpha=0.1)
+
+    thinkplot.PrePlot(2)
+
+    ts, lams = EstimateHazardFuncion(past, current)
+    thinkplot.Plot(ts, lams, label='lams(t)', alpha=0.5)
+
+    ts, ss = MakeSurvivalFromHazard(ts, lams)
+    thinkplot.Plot(ts, ss, label='S(t)')
+    thinkplot.Show(xlabel='t (weeks)')
+
+
+def EstimateHazardFuncion(past, current):
+    """Estimates the hazard function by Kaplan-Meier.
+
+    http://en.wikipedia.org/wiki/Kaplan%E2%80%93Meier_estimator
+
+    past: list of durations for complete pregnancies
+    current: list of durations for current pregnancies    
+    """
+    # pmf of pregnancies known to have ended at each timestep
+    pmf = thinkstats2.MakePmfFromList(past)
+
+    # survival curve for the known pregnancy lengths
+    n = len(past)
+    cdf_dur = thinkstats2.MakeCdfFromList(past)
+    ts, ss = SurvivalFunction(cdf_dur)
+
+    # CDF of duration for current pregnancies
+    m = len(current)
+    cdf_cur = thinkstats2.MakeCdfFromList(current)
+
+    hazard_func = []
+
+    for t, s in zip(ts, ss):
+        ended = n * pmf.Prob(t)
+        ongoing = n * s + m * (1 - cdf_cur.Prob(t))
+        at_risk = ended + ongoing
+        hazard = ended / at_risk
+        hazard_func.append((t, hazard))
+
+    return zip(*hazard_func)
+
+
+def MakeSurvivalFromHazard(ts, lams):
+    """Given a hazard function, make the survival function.
+    
+    ts: sequence of times
+    lams: sequence of hazards
+
+    returns: tuple of ts, ss
+    """
+    s = 1.0
+    res = []
+
+    for t, lam in zip(ts, lams):
+        print t, s, lam
+        res.append((t, s))
+        s *= 1-lam
+
+    return zip(*res)
+
+
 def main(name, data_dir='.'):
-    durations = GetDurations(data_dir)
+    past = GetDurations(data_dir, [1, 3, 4])
+    current = GetDurations(data_dir, [6])
+    PlotHazard(past, current)
+    return
+
+    durations = GetDurations(data_dir, [1, 3, 4])
     PlotSurvival(durations)
     PlotConditionalSurvival(durations)
-    
-
 
 
 if __name__ == '__main__':
